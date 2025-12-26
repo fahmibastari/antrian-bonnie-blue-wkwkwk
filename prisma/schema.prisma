@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DIRECT_URL") 
+  // directUrl = env("DIRECT_URL") // Optional if url is already direct
+}
+
+model QueueItem {
+  id           Int         @id @default(autoincrement())
+  name         String
+  age          Int
+  height       Float
+  color        String
+  styleRequest String
+  photoUrl     String
+  status       QueueStatus @default(WAITING)
+  createdAt    DateTime    @default(now())
+}
+
+enum QueueStatus {
+  WAITING
+  PROCESSING
+  COMPLETED
+}
