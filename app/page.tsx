@@ -1,6 +1,7 @@
 import { registerQueue } from './actions'
 import { ImageUpload } from './image-upload'
 import Image from 'next/image'
+import { SubmitButton } from './components/SubmitButton'
 
 export default function Home() {
   return (
@@ -96,9 +97,7 @@ export default function Home() {
               <a href="/dashboard" className="btn" style={{ background: 'var(--muted)', color: 'var(--foreground)' }}>
                 Batal
               </a>
-              <button type="submit" className="btn btn-primary" style={{ padding: '1rem' }}>
-                Ngantri Sekarang
-              </button>
+              <SubmitButton />
             </div>
           </form>
         </div>

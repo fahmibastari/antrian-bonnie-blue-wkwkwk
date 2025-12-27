@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { AutoRefresh } from './auto-refresh'
+import { QueueCard } from '@/app/components/QueueCard'
 
 export const dynamic = 'force-dynamic'
 
@@ -7,7 +8,7 @@ export default async function DashboardPage() {
     const queue = await prisma.queueItem.findMany({
         where: {
             status: {
-                in: ['WAITING', 'PROCESSING']
+                in: ['WAITING', 'PROCESSING', 'COMPLETED']
             }
         },
         orderBy: {
@@ -17,6 +18,11 @@ export default async function DashboardPage() {
 
     const current = queue.find((item: any) => item.status === 'PROCESSING')
     const waiting = queue.filter((item: any) => item.status === 'WAITING')
+    // Get last 6 completed items, reversed to show newest first
+    const completed = queue
+        .filter((item: any) => item.status === 'COMPLETED')
+        .reverse()
+        .slice(0, 6)
 
     return (
         <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #eff6ff, #ffffff)', padding: '2rem 1rem' }}>
@@ -192,50 +198,34 @@ export default async function DashboardPage() {
                             <p style={{ color: '#94a3b8' }}>Antrian kosong.</p>
                         ) : (
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
-                                {waiting.map((item: any) => (
-                                    <div key={item.id} className="card" style={{
-                                        padding: '1.25rem',
-                                        display: 'flex',
-                                        alignItems: 'start',
-                                        gap: '1rem',
-                                        transition: 'transform 0.2s',
-                                        cursor: 'default'
-                                    }}>
-                                        <div style={{ width: '60px', height: '60px', borderRadius: '50%', overflow: 'hidden', background: '#f1f5f9', flexShrink: 0 }}>
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={item.photoUrl || 'https://via.placeholder.com/60'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                                                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>#{item.id}</div>
-                                            </div>
-                                            <div style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem', lineHeight: 1.2 }}>{item.name}</div>
-
-                                            <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: '0.4rem', background: '#f8fafc', padding: '0.5rem', borderRadius: '0.5rem' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                    <span>Umur:</span> <strong>{item.age} Th</strong>
-                                                </div>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                    <span>Panjang:</span> <strong>{item.height} cm</strong>
-                                                </div>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <span>Warna:</span>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                                        <span style={{ width: '10px', height: '10px', background: item.color, borderRadius: '50%', border: '1px solid #ddd' }}></span>
-                                                        <strong>{item.color}</strong>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <span style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.1rem' }}>Request Gaya:</span>
-                                                    <strong style={{ display: 'block', lineHeight: 1.2 }}>{item.styleRequest}</strong>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                {waiting.map((item: any, i: number) => (
+                                    <QueueCard key={item.id} item={item} index={i} />
                                 ))}
                             </div>
                         )}
                     </section>
+
+                    {/* HISTORY LIST */}
+                    {completed.length > 0 && (
+                        <section>
+                            <h3 style={{
+                                fontSize: '1.2rem',
+                                fontWeight: 700,
+                                marginBottom: '1rem',
+                                textTransform: 'uppercase',
+                                color: '#10b981',
+                                letterSpacing: '1px',
+                                marginTop: '2rem'
+                            }}>
+                                Riwayat Layanan Terakhir
+                            </h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+                                {completed.map((item: any) => (
+                                    <QueueCard key={item.id} item={item} />
+                                ))}
+                            </div>
+                        </section>
+                    )}
                 </div>
             </div>
         </div>
