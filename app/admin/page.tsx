@@ -25,6 +25,8 @@ export default async function AdminPage() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '1rem',
                     marginBottom: '2rem',
                     background: 'white',
                     padding: '1.5rem',
@@ -32,11 +34,11 @@ export default async function AdminPage() {
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                 }}>
                     <div>
-                        <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)' }}>Admin Dashboard</h1>
+                        <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)', lineHeight: 1.2 }}>Admin Dashboard</h1>
                         <p style={{ color: '#64748b', margin: 0 }}>Kelola antrian dengan mudah</p>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         <a href="/dashboard" className="btn" style={{ background: '#f1f5f9', color: '#475569' }}>
                             Lihat Layar
                         </a>
@@ -50,21 +52,20 @@ export default async function AdminPage() {
                     {/* Active Queue Section */}
                     {processing.length > 0 && (
                         <section>
-                            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2563eb', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                Sedang Dilayani
-                            </h2>
-                            {processing.map((item: any) => (
-                                <QueueCard key={item.id} item={item}>
-                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                                        <form action={updateStatus.bind(null, item.id, 'COMPLETED')}>
-                                            <button className="btn" style={{ background: '#10b981', color: 'white', padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Selesai</button>
-                                        </form>
-                                        <form action={deleteItem.bind(null, item.id)}>
-                                            <button className="btn" style={{ background: 'white', color: '#ef4444', border: '1px solid #ef4444', padding: '0.5rem', fontSize: '0.9rem' }} title="Hapus">Hapus</button>
-                                        </form>
-                                    </div>
-                                </QueueCard>
-                            ))}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {processing.map((item: any) => (
+                                    <QueueCard key={item.id} item={item}>
+                                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                                            <form action={updateStatus.bind(null, item.id, 'COMPLETED')}>
+                                                <button className="btn" style={{ background: '#10b981', color: 'white', padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Selesai</button>
+                                            </form>
+                                            <form action={deleteItem.bind(null, item.id)}>
+                                                <button className="btn" style={{ background: 'white', color: '#ef4444', border: '1px solid #ef4444', padding: '0.5rem', fontSize: '0.9rem' }} title="Hapus">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </QueueCard>
+                                ))}
+                            </div>
                         </section>
                     )}
 
@@ -78,18 +79,20 @@ export default async function AdminPage() {
                                 Belum ada antrian.
                             </div>
                         ) : (
-                            waiting.map((item: any) => (
-                                <QueueCard key={item.id} item={item}>
-                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                                        <form action={updateStatus.bind(null, item.id, 'PROCESSING')}>
-                                            <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Panggil</button>
-                                        </form>
-                                        <form action={deleteItem.bind(null, item.id)}>
-                                            <button className="btn" style={{ background: 'white', color: '#ef4444', border: '1px solid #ef4444', padding: '0.5rem', fontSize: '0.9rem' }} title="Hapus">Hapus</button>
-                                        </form>
-                                    </div>
-                                </QueueCard>
-                            ))
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {waiting.map((item: any) => (
+                                    <QueueCard key={item.id} item={item}>
+                                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                                            <form action={updateStatus.bind(null, item.id, 'PROCESSING')}>
+                                                <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Panggil</button>
+                                            </form>
+                                            <form action={deleteItem.bind(null, item.id)}>
+                                                <button className="btn" style={{ background: 'white', color: '#ef4444', border: '1px solid #ef4444', padding: '0.5rem', fontSize: '0.9rem' }} title="Hapus">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </QueueCard>
+                                ))}
+                            </div>
                         )}
                     </section>
 
@@ -99,15 +102,17 @@ export default async function AdminPage() {
                             <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#059669', marginBottom: '1rem', marginTop: '1rem' }}>
                                 Selesai
                             </h2>
-                            {completed.map((item: any) => (
-                                <QueueCard key={item.id} item={item}>
-                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                                        <form action={deleteItem.bind(null, item.id)}>
-                                            <button className="btn" style={{ background: 'white', color: '#ef4444', border: '1px solid #ef4444', padding: '0.5rem', fontSize: '0.9rem' }} title="Hapus">Hapus</button>
-                                        </form>
-                                    </div>
-                                </QueueCard>
-                            ))}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {completed.map((item: any) => (
+                                    <QueueCard key={item.id} item={item}>
+                                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                                            <form action={deleteItem.bind(null, item.id)}>
+                                                <button className="btn" style={{ background: 'white', color: '#ef4444', border: '1px solid #ef4444', padding: '0.5rem', fontSize: '0.9rem' }} title="Hapus">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </QueueCard>
+                                ))}
+                            </div>
                         </section>
                     )}
 

@@ -16,19 +16,16 @@ export type QueueItem = {
 
 export function QueueCard({ item, index, children }: { item: QueueItem, index?: number, children?: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false)
-    // If index is provided, use it (1-based), otherwise use ID
-    const displayId = index !== undefined ? index + 1 : item.id
+    // Use ID directly as requested by user
+    const displayId = item.id
 
     return (
         <>
             <div
-                className="card"
+                className="card queue-layout"
                 onClick={() => setIsOpen(true)}
                 style={{
                     padding: '1.25rem',
-                    display: 'flex',
-                    alignItems: 'start',
-                    gap: '1rem',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     cursor: 'pointer',
                     height: '100%',
@@ -75,11 +72,15 @@ export function QueueCard({ item, index, children }: { item: QueueItem, index?: 
                                 <strong>{item.color}</strong>
                             </div>
                         </div>
+                        <div style={{ borderTop: '1px dashed #e2e8f0', paddingTop: '0.4rem', marginTop: '0.2rem' }}>
+                            <span style={{ display: 'block', fontSize: '0.7rem', color: '#94a3b8', marginBottom: '0.1rem' }}>Request Gaya:</span>
+                            <strong style={{ display: 'block', lineHeight: 1.2, color: '#334155' }}>"{item.styleRequest}"</strong>
+                        </div>
                     </div>
                 </div>
                 {/* Prevent click propagation for action buttons if any */}
                 {children && (
-                    <div style={{ marginLeft: '0.5rem' }} onClick={(e) => e.stopPropagation()}>
+                    <div className="queue-actions" onClick={(e) => e.stopPropagation()}>
                         {children}
                     </div>
                 )}
